@@ -2,9 +2,9 @@ import { FcReadingEbook } from "react-icons/fc"
 
 export const  StudentForm = () => {
     return (
-        <form action="" className="bg-white rounded-lg shadow-md p-6">
+        <form action="" className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className="flex">
-                <h1 className="text-2xl flex items-center gap-2 mb-4 font-bold">
+                <h1 className="text-2xl flex items-center gap-2 mb-4 font-semibold">
                     <FcReadingEbook/><span>Add New Student</span>
                 </h1>
             </div>
