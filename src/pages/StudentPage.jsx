@@ -1,9 +1,40 @@
 import { StudentForm } from "../components/StudentForm"
 import { FcDataSheet } from "react-icons/fc";
-import { FaEdit } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import {useCallback, useState, useEffect} from "react";
+import axios from "axios";
 
 export const StudentPage = () => {
+    const [students, setStudents] = useState([]);
+
+    const fetchStudents = useCallback(
+        async() => {
+            try {
+                const request = axios.create(
+                    {
+                        baseURL:'http://localhost:3000/api/v1/students',
+                        headers:{'Content-Type':'application/json'} 
+                    }
+                );
+                
+                await request.get('/all').then(
+                    (response) => {
+                        setStudents(response.data.data);
+                    }
+                ); 
+
+            } catch (error) {
+                console.error("Failed to fetch students", error);              
+            }
+        }
+    )
+
+    useEffect(
+        () => {
+            fetchStudents();
+        }
+    , [fetchStudents]);
+
     return (
         <div className="">
             <StudentForm/>
@@ -33,34 +64,69 @@ export const StudentPage = () => {
                         </th>
                     </thead>
                     <tbody>
-                        <tr className="hover:bg-gray-50">
-                            <td className="px-6 py-4 font-light
-                                text-gray-700">
-                                Roshan Perera
-                            </td>
-                            <td className="px-6 py-4 font-light
-                                text-gray-700">
-                                roshan@gmail.com
-                            </td>
-                            <td className="px-6 py-4 font-light
-                                text-gray-700">
-                                1999/09/04
-                            </td>
-                            <td>
-                                <div className="flex gap-4">
-                                    <button className=" flex items-center border px-4 py-2 border-amber-300 gap-1.5
-                                        rounded hover:bg-amber-300 hover:shadow-sm">
-                                        <FaEdit className="h-4 w-4 text-black"/>
-                                        <span className="text-black font-medium">Edit</span>           
+                        {students.map((student) => (
+                            <tr key={student.student_id} className="hover:bg-gray-50">
+                                <td
+                                className="px-6 py-4 font-light
+                                        text-gray-700"
+                                >
+                                {student.first_name} {student.last_name}
+                                </td>
+                                <td
+                                className="px-6 py-4 font-light
+                                        text-gray-700"
+                                >
+                                {student.email}
+                                </td>
+                                <td
+                                className="px-6 py-4 font-light
+                                        text-gray-700"
+                                >
+                                {format(new Date(student.dob), 'yyyy-mm-dd')}
+                                </td>
+                                <td>
+                                <div className="flex justify-center gap-4">
+                                    <button
+                                    className="flex items-center border px-4 py-2
+                                                border-amber-300 gap-1.5
+                                                rounded hover:bg-amber-300 hover:shadow-sm 
+                                                "
+                                    >
+                                    <FaEdit
+                                        className="h-4 w-4
+                                                text-black"
+                                    />
+                                    <span
+                                        className="text-black
+                                                font-medium"
+                                    >
+                                        Edit
+                                    </span>
                                     </button>
-                                    <button className="flex items-center border px-4 py-2 border-red-600 gap-1.5
-                                        rounded hover:bg-red-600 hover:shadow-sm">
-                                        <FaTrash className="h-4 w-4 text-black"/>
-                                        <span className="text-black font-medium">Delete</span>           
+
+                                    <button
+                                    className="flex items-center border px-4 py-2
+                                                border-red-500 gap-1.5
+                                                rounded hover:bg-red-600 hover:shadow-sm 
+                                                "
+                                    >
+                                    <FaTrash
+                                        className="h-4 w-4
+                                                text-black"
+                                    />
+                                    <span
+                                        className="text-black
+                                                font-medium"
+                                    >
+                                        Delete
+                                    </span>
                                     </button>
                                 </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                            ))}
+
+                        
                     </tbody>
                 </table>
             </div>
