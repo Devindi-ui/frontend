@@ -3,6 +3,7 @@ import { FcDataSheet } from "react-icons/fc";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import {useCallback, useState, useEffect} from "react";
 import axios from "axios";
+import { format } from "date-fns";
 
 export const StudentPage = () => {
     const [students, setStudents] = useState([]);
@@ -37,9 +38,9 @@ export const StudentPage = () => {
 
     return (
         <div className="">
-            <StudentForm/>
+            <StudentForm onStudentAdded={fetchStudents}/>
 
-            <div className="bg-white rounded lg shadow-md p-6 mb-4">
+            <div className="bg-white rounded lg shadow-md p-6 mb-4 overflow-x-auto">
                 <h1 className="text-2xl font-semibold flex items-center gap-2 mb-4">
                     <FcDataSheet/> <span>Student List</span>
                 </h1>
@@ -70,19 +71,19 @@ export const StudentPage = () => {
                                 className="px-6 py-4 font-light
                                         text-gray-700"
                                 >
-                                {student.first_name} {student.last_name}
+                                    {student.first_name} {student.last_name}
                                 </td>
                                 <td
                                 className="px-6 py-4 font-light
                                         text-gray-700"
                                 >
-                                {student.email}
+                                    {student.email}
                                 </td>
                                 <td
                                 className="px-6 py-4 font-light
                                         text-gray-700"
                                 >
-                                {format(new Date(student.dob), 'yyyy-mm-dd')}
+                                    {format(new Date(student.dob), 'yyyy-MM-dd')}
                                 </td>
                                 <td>
                                 <div className="flex justify-center gap-4">

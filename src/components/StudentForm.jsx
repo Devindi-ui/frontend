@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react"
 import { FcReadingEbook } from "react-icons/fc"
 
-export const  StudentForm = () => {
+export const  StudentForm = ({onStudentAdded}) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -10,7 +10,6 @@ export const  StudentForm = () => {
 
     const handleSaveStudent = async(e) => {
         e.preventDefault();
-        alert("1");
         try {
             const student = {//BE       //FE
                         first_name: firstName, 
@@ -20,7 +19,6 @@ export const  StudentForm = () => {
             };
 
             //create API
-            alert("2");
             await axios.create(
                 {
                     baseURL:'http://localhost:3000/api/v1/students',
@@ -29,6 +27,11 @@ export const  StudentForm = () => {
             ).post('/create',student).then(
                 (msg) => {alert(msg.statusText)}
             );
+            onStudentAdded();
+            setFirstName('');
+            setLastName('');
+            setEmail('');
+            setDob('');
 
         } catch (error) {
             console.error("Failed to save student", error);           
@@ -46,18 +49,22 @@ export const  StudentForm = () => {
                 <input type="text" placeholder="First Name"
                     className="p-2 border rounded" required
                     onChange={(e) => setFirstName(e.target.value)}
+                    value={firstName}
                 />
                 <input type="text" placeholder="Last Name"
                     className="p-2 border rounded" required
                     onChange={(e) => setLastName(e.target.value)}
+                    value={lastName}
                 />
                 <input type="email" placeholder="Email"
                     className="p-2 border rounded" required
                     onChange={(e) => setEmail(e.target.value)}
+                    value={email}
                 />
                 <input type="date" placeholder="DOB"
                     className="p-2 border rounded" required
                     onChange={(e) => setDob(e.target.value)}
+                    value={dob}
                 />
             </div>
             <button type="submit" className="bg-sky-500 px-4 py-2 rounded 
