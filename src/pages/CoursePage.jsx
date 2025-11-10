@@ -1,8 +1,8 @@
 import { FcWorkflow } from "react-icons/fc";
-import { CourseForm } from "../components/CourseForm";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
 import { courseAPI } from "../services/api";
+import { CourseForm } from "../components/CourseForm";
 
 export const CoursePage = () => {
   const [courses, setCourses] = useState([]);

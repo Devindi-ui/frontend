@@ -34,15 +34,15 @@ export const EntrollmentPage = () => {
                   <div className="flex justify-center gap-2">
                     <button
                       className="px-2 py-2 border border-amber-400
-                                                                   rounded hover:bg-amber-500 hover:text-white
-                                                                   hover:shadow-md text-amber-500"
+                                rounded hover:bg-amber-500 hover:text-white
+                                hover:shadow-md text-amber-500"
                     >
                       <FaEdit className="w-4 h-4" />
                     </button>
                     <button
                       className="px-2 py-2 border border-red-400
-                                                                   rounded hover:bg-red-500 hover:text-white
-                                                                   hover:shadow-md text-red-500"
+                                rounded hover:bg-red-500 hover:text-white
+                                hover:shadow-md text-red-500"
                     >
                       <FaTrash className="w-4 h-4" />
                     </button>
