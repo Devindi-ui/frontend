@@ -18,3 +18,8 @@ export const courseAPI ={
     createCourse: (course) => api.post('/courses/create',course),
     getAllCourses: () => api.get('/courses/all')
 }
+
+export const enrollmentAPI = {
+    createEnrollment: (enrollment) => api.post('/enrollments/create', enrollment),
+    getAllEnrollments: () => api.get('/enrollments/all')
+}

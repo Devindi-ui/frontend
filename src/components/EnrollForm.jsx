@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { FcMindMap } from "react-icons/fc";
-import { courseAPI, studentAPI } from "../services/api";
+import { courseAPI, enrollmentAPI, studentAPI } from "../services/api";
+import toast from "react-hot-toast";
 
 export const EntrollForm = () => {
     const [students,setStudents] = useState([]);
     const [courses,setCourses] = useState([]);
+    const [selectedStudent, setSelectedStudent] = useState(['']);
+    const [selectedCourse, setSelectedCourse] = useState(['']);  //get ids
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const fetchData = async() => {
         try {
@@ -24,13 +28,41 @@ export const EntrollForm = () => {
         }
     ,[]);
 
+    const handleSaveEnrollment = async(e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        const enrollment = {
+            student_id: selectedStudent,
+            course_id: selectedCourse
+        }
+
+        const enrollPromise = enrollmentAPI.createEnrollment(enrollment);
+        toast.promise(enrollPromise, 
+            {
+                loading: "Saving enrollment",
+                success: <b>Student enrolled successfully!</b>,
+                error: <b>Enrollment failed!</b>
+            }
+        ).then (
+            () => {
+                setSelectedStudent('');
+                setSelectedCourse('');
+            }
+        ).catch(
+            (error) => {console.error('Saving error: ',error)}
+        ).finally(
+            () => {setIsSubmitting(true)}
+        );
+
+    }
+
   return (
     <div className="bg-white p-6 shadow-md rounded-lg mb-6">
       <h1 className="text-2xl flex items-center font-bold gap-2 mb-6">
         <FcMindMap className="w-10 h-10" />
         <span>Student Enrollment</span>
       </h1>
-      <form>
+      <form onSubmit={handleSaveEnrollment}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="mb-4">
             <label
@@ -39,8 +71,10 @@ export const EntrollForm = () => {
             >
               Select Student
             </label>
-            <select className="w-full p-2 border rounded font-light">
-              <option>-- Select a student --</option>
+            <select className="w-full p-2 border rounded font-light"
+            onChange={(e) => {setSelectedStudent(e.target.value)}} 
+            value={selectedStudent}>
+              <option value="" >-- Select a student --</option>
               {
                 students.map(
                     student => {
@@ -59,12 +93,14 @@ export const EntrollForm = () => {
             >
               Select Course
             </label>
-            <select className="w-full p-2 border rounded font-light">
-              <option>-- Select a course --</option>
+            <select className="w-full p-2 border rounded font-light"
+            onChange={(e) => {setSelectedCourse(e.target.value)}}
+            value={selectedCourse}>
+              <option value="" >-- Select a course --</option>
               {
                 courses.map(
                     course => {
-                        return <option key={course.course_id}>
+                        return <option key={course.course_id} value={course.course_id}>
                             {course.course_name} | {course.course_code}
                             </option>
                     }
