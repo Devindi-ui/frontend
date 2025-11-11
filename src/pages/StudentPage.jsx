@@ -4,37 +4,47 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import {useCallback, useState, useEffect} from "react";
 import axios from "axios";
 import { format } from "date-fns";
+import { studentAPI } from "../services/api";
+import toast from "react-hot-toast";
 
 export const StudentPage = () => {
     const [students, setStudents] = useState([]);
+    const [hasStudents, setHasStudents] = useState(false);
 
     const fetchStudents = useCallback(
         async() => {
             try {
-                const request = axios.create(
-                    {
-                        baseURL:'http://localhost:3000/api/v1/students',
-                        headers:{'Content-Type':'application/json'} 
-                    }
-                );
-                
-                await request.get('/all').then(
-                    (response) => {
+                await studentAPI.getAllStudent()
+                .then((response) => {
+                    if (response.data.data){
                         setStudents(response.data.data);
+                        setHasStudents(true);
                     }
-                ); 
-
+                });
             } catch (error) {
                 console.error("Failed to fetch students", error);              
             }
-        }
-    )
+    },[]);
 
     useEffect(
         () => {
             fetchStudents();
         }
     , [fetchStudents]);
+
+    const handleDeleteStudent = async (studentId) => {
+        const deletePromise = studentAPI.deleteStudent(studentId);
+        toast.promise(
+            deletePromise,
+            {
+                loading: "Deleting student...",
+                success: <b>Student Deleted Successfully!</b>,
+                error: <b>Failed to delete</b>
+            }
+        ).catch(
+            (error) => console.error("Delete Failed", error)     
+        )
+    };
 
     return (
         <div className="">
@@ -65,69 +75,79 @@ export const StudentPage = () => {
                         </th>
                     </thead>
                     <tbody>
-                        {students.map((student) => (
-                            <tr key={student.student_id} className="hover:bg-gray-50">
-                                <td
-                                className="px-6 py-4 font-light
-                                        text-gray-700"
-                                >
-                                    {student.first_name} {student.last_name}
-                                </td>
-                                <td
-                                className="px-6 py-4 font-light
-                                        text-gray-700"
-                                >
-                                    {student.email}
-                                </td>
-                                <td
-                                className="px-6 py-4 font-light
-                                        text-gray-700"
-                                >
-                                    {format(new Date(student.dob), 'yyyy-MM-dd')}
-                                </td>
-                                <td>
-                                <div className="flex justify-center gap-4">
-                                    <button
-                                    className="flex items-center border px-4 py-2
-                                                border-amber-300 gap-1.5
-                                                rounded hover:bg-amber-300 hover:shadow-sm 
-                                                "
+                        {
+                        hasStudents ? (
+                            
+                            students.map((student) => (
+                                <tr key={student.student_id} className="hover:bg-gray-50">
+                                    <td
+                                    className="px-6 py-4 font-light
+                                            text-gray-700"
                                     >
-                                    <FaEdit
-                                        className="h-4 w-4
-                                                text-black"
-                                    />
-                                    <span
-                                        className="text-black
-                                                font-medium"
+                                        {student.first_name} {student.last_name}
+                                    </td>
+                                    <td
+                                    className="px-6 py-4 font-light
+                                            text-gray-700"
                                     >
-                                        Edit
-                                    </span>
-                                    </button>
+                                        {student.email}
+                                    </td>
+                                    <td
+                                    className="px-6 py-4 font-light
+                                            text-gray-700"
+                                    >
+                                        {format(new Date(student.dob), 'yyyy-MM-dd')}
+                                    </td>
+                                    <td>
+                                    <div className="flex justify-center gap-4">
+                                        <button
+                                        className="flex items-center border px-4 py-2
+                                                    border-amber-300 gap-1.5
+                                                    rounded hover:bg-amber-300 hover:shadow-sm 
+                                                    "
+                                        >
+                                        <FaEdit
+                                            className="h-4 w-4
+                                                    text-black"
+                                        />
+                                        <span
+                                            className="text-black
+                                                    font-medium"
+                                        >
+                                            Edit
+                                        </span>
+                                        </button>
+    
+                                        <button onClick={() => handleDeleteStudent(student.student_id)}
+                                        className="flex items-center border px-4 py-2
+                                                    border-red-500 gap-1.5
+                                                    rounded hover:bg-red-600 hover:shadow-sm 
+                                                    "
+                                        >
+                                        <FaTrash
+                                            className="h-4 w-4
+                                                    text-black"
+                                        />
+                                        <span
+                                            className="text-black
+                                                    font-medium"
+                                        >
+                                            Delete
+                                        </span>
+                                        </button>
+                                    </div>
+                                    </td>
+                                </tr>
+                            ))
+                            ) : (
+                                <tr>
+                                    <td className="px-6 py-4 text-center font-bold">
+                                        No Students Data 
+                                    </td>
+                                </tr>
+                            )
 
-                                    <button
-                                    className="flex items-center border px-4 py-2
-                                                border-red-500 gap-1.5
-                                                rounded hover:bg-red-600 hover:shadow-sm 
-                                                "
-                                    >
-                                    <FaTrash
-                                        className="h-4 w-4
-                                                text-black"
-                                    />
-                                    <span
-                                        className="text-black
-                                                font-medium"
-                                    >
-                                        Delete
-                                    </span>
-                                    </button>
-                                </div>
-                                </td>
-                            </tr>
-                            ))}
-
-                        
+                        }
                     </tbody>
                 </table>
             </div>
