@@ -6,8 +6,8 @@ import toast from "react-hot-toast";
 export const EntrollForm = () => {
     const [students,setStudents] = useState([]);
     const [courses,setCourses] = useState([]);
-    const [selectedStudent, setSelectedStudent] = useState(['']);
-    const [selectedCourse, setSelectedCourse] = useState(['']);  //get ids
+    const [selectedStudent, setSelectedStudent] = useState('');
+    const [selectedCourse, setSelectedCourse] = useState('');  //get ids
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const fetchData = async() => {
@@ -73,7 +73,7 @@ export const EntrollForm = () => {
             </label>
             <select className="w-full p-2 border rounded font-light"
             onChange={(e) => {setSelectedStudent(e.target.value)}} 
-            value={selectedStudent}>
+            value={selectedStudent} required>
               <option value="" >-- Select a student --</option>
               {
                 students.map(
@@ -95,7 +95,7 @@ export const EntrollForm = () => {
             </label>
             <select className="w-full p-2 border rounded font-light"
             onChange={(e) => {setSelectedCourse(e.target.value)}}
-            value={selectedCourse}>
+            value={selectedCourse} required>
               <option value="" >-- Select a course --</option>
               {
                 courses.map(
