@@ -28,7 +28,7 @@ export const EntrollmentPage = () => {
 
   return (
     <div className="">
-      <EntrollForm />
+      <EntrollForm onEnrollmentAdded={fetchEnrollments}/>
 
       <div className="p-6 shadow-lg bg-white rounded-lg">
         <h1 className="text-2xl font-bold flex items-center gap-2 mb-6">

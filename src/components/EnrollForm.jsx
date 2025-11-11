@@ -3,7 +3,7 @@ import { FcMindMap } from "react-icons/fc";
 import { courseAPI, enrollmentAPI, studentAPI } from "../services/api";
 import toast from "react-hot-toast";
 
-export const EntrollForm = () => {
+export const EntrollForm = ({onEnrollmentAdded}) => {
     const [students,setStudents] = useState([]);
     const [courses,setCourses] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState('');
@@ -47,6 +47,7 @@ export const EntrollForm = () => {
             () => {
                 setSelectedStudent('');
                 setSelectedCourse('');
+                onEnrollmentAdded();
             }
         ).catch(
             (error) => {console.error('Saving error: ',error)}
@@ -110,7 +111,9 @@ export const EntrollForm = () => {
           </div>
         </div>
         <button className="px-4 py-2 bg-sky-500 text-white
-        hover:bg-sky-600 rounded">Enroll</button>
+         hover:bg-sky-600 rounded" disabled={isSubmitting}>
+          {isSubmitting ? "Enrolling...":"Enroll"}
+        </button>
       </form>
     </div>
   );
