@@ -3,14 +3,19 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
 import { courseAPI } from "../services/api";
 import { CourseForm } from "../components/CourseForm";
+import toast from "react-hot-toast";
 
 export const CoursePage = () => {
   const [courses, setCourses] = useState([]);
+  const [hasCourse, setHasCourse] = useState(false);
 
   const fetchCourses = useCallback(async () => {
     try {
       const response = await courseAPI.getAllCourses();
-      setCourses(response.data.data);
+      if(response.data){
+        setCourses(response.data.data);
+        setHasCourse(true);
+      }
     } catch (error) {
       console.error("Faild to fetch courses", error);
     }
@@ -20,8 +25,18 @@ export const CoursePage = () => {
   }, [fetchCourses]);
 
   const handleDeleteCourse = (courseId) => {
-    alert(courseId);
-  }
+    if (window.confirm("Are you want to delete the course ?")){
+      const deletePromise = courseAPI.deleteCourse(courseId);
+      toast.promise(deletePromise,
+        {
+          loading: "Deleting course",
+          success: <b>Course deleted successfully!</b>,
+          error: <b>Failed to delete course</b>
+        })
+        .then(() => fetchCourses())
+        .catch((error) => console.error(error));
+    }
+  };
 
   return (
     <div>
