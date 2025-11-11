@@ -58,7 +58,9 @@ export const CoursePage = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {courses.map((course) => {
+            {
+            hasCourse ? (
+              courses.map((course) => {
               return (
                 <tr key={course.course_id} className="hover:bg-gray-50">
                   <td
@@ -106,7 +108,14 @@ export const CoursePage = () => {
                   </td>
                 </tr>
               );
-            })}
+            })
+            ) : (
+              <tr>
+                <td className="px-6 py-4 font-bold">Course not found</td>
+              </tr>
+            )
+              
+          }
           </tbody>
         </table>
       </div>
