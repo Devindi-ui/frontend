@@ -1,20 +1,20 @@
 import { FcWorkflow } from "react-icons/fc";
+import { CourseForm } from "../components/CourseForm";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
 import { courseAPI } from "../services/api";
-import { CourseForm } from "../components/CourseForm";
 import toast from "react-hot-toast";
 
 export const CoursePage = () => {
   const [courses, setCourses] = useState([]);
-  const [hasCourse, setHasCourse] = useState(false);
-
+  const [hasCourse, setHasCourses] =  useState(false);
+  
   const fetchCourses = useCallback(async () => {
     try {
       const response = await courseAPI.getAllCourses();
       if(response.data){
         setCourses(response.data.data);
-        setHasCourse(true);
+        setHasCourses(true);
       }
     } catch (error) {
       console.error("Faild to fetch courses", error);
@@ -24,14 +24,14 @@ export const CoursePage = () => {
     fetchCourses();
   }, [fetchCourses]);
 
-  const handleDeleteCourse = (courseId) => {
-    if (window.confirm("Are you want to delete the course ?")){
+  const handleDeleteCourse = async (courseId) => {
+    if (window.confirm("Are you want to delete the course")) {
       const deletePromise = courseAPI.deleteCourse(courseId);
-      toast.promise(deletePromise,
-        {
+      toast
+        .promise(deletePromise, {
           loading: "Deleting course",
           success: <b>Course deleted successfully!</b>,
-          error: <b>Failed to delete course</b>
+          error: <b>Failed course delete</b>,
         })
         .then(() => fetchCourses())
         .catch((error) => console.error(error));
@@ -96,8 +96,10 @@ export const CoursePage = () => {
                       >
                         <FaEdit className="w-4 h-4" />
                       </button>
-                      <button 
-                        onClick={() => {handleDeleteCourse(course.course_id)}}
+                      <button
+                        onClick={() => {
+                          handleDeleteCourse(course.course_id);
+                        }}
                         className="px-2 py-2 border border-red-400
                                 rounded hover:bg-red-500 hover:text-white
                                 hover:shadow-md text-red-500"
@@ -110,12 +112,10 @@ export const CoursePage = () => {
               );
             })
             ) : (
-              <tr>
-                <td className="px-6 py-4 font-bold">Course not found</td>
-              </tr>
+              <tr><td className="px-6 py-4 font-bold">Course not found</td></tr>
             )
-              
-          }
+
+            }
           </tbody>
         </table>
       </div>

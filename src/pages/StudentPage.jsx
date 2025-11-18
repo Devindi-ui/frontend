@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 export const StudentPage = () => {
     const [students, setStudents] = useState([]);
     const [hasStudents, setHasStudents] = useState(false);
+    const [editingStudent, setEditingStudent] = useState(null);
 
     const fetchStudents = useCallback(
         async() => {
@@ -19,6 +20,7 @@ export const StudentPage = () => {
                     if (response.data.data){
                         setStudents(response.data.data);
                         setHasStudents(true);
+                        setEditingStudent(null);
                     }
                 });
             } catch (error) {
@@ -31,6 +33,15 @@ export const StudentPage = () => {
             fetchStudents();
         }
     , [fetchStudents]);
+
+
+    const editStudent = (student) =>{
+        setEditingStudent(student);
+    }
+
+    const clearEditStudent = () => {
+        setEditingStudent(null);
+    }
 
     const handleDeleteStudent = async (studentId) => {
         const deletePromise = studentAPI.deleteStudent(studentId);
@@ -48,7 +59,8 @@ export const StudentPage = () => {
 
     return (
         <div className="">
-            <StudentForm onStudentAdded={fetchStudents}/>
+            <StudentForm onStudentAdded={fetchStudents} studentToEdit={editingStudent}
+                cancelEdit={clearEditStudent}/>
 
             <div className="bg-white rounded lg shadow-md p-6 mb-4 overflow-x-auto">
                 <h1 className="text-2xl font-semibold flex items-center gap-2 mb-4">
@@ -70,8 +82,7 @@ export const StudentPage = () => {
                             Date of Birth 
                         </th>
                         <th className="px-6 py-4 font-medium
-                            text-gray-900">
-                             
+                            text-gray-900">                           
                         </th>
                     </thead>
                     <tbody>
@@ -101,6 +112,7 @@ export const StudentPage = () => {
                                     <td>
                                     <div className="flex justify-center gap-4">
                                         <button
+                                        onClick={() => editStudent(student)}
                                         className="flex items-center border px-4 py-2
                                                     border-amber-300 gap-1.5
                                                     rounded hover:bg-amber-300 hover:shadow-sm 
@@ -146,7 +158,6 @@ export const StudentPage = () => {
                                     </td>
                                 </tr>
                             )
-
                         }
                     </tbody>
                 </table>

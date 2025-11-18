@@ -12,6 +12,7 @@ const api = axios.create(
 export const studentAPI = {
     createStudent: (studnet) => api.post('/students/create',studnet),
     getAllStudent: () => api.get('/students/all'),
+    updateStudent: (id, student) => api.put(`/students/update/${id}`, student),
     deleteStudent: (studentId) => api.put(`/students/delete/${studentId}`)
 }
 

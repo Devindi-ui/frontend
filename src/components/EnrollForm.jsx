@@ -7,8 +7,8 @@ export const EntrollForm = ({onEnrollmentAdded}) => {
     const [students,setStudents] = useState([]);
     const [courses,setCourses] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState('');
-    const [selectedCourse, setSelectedCourse] = useState('');  //get ids
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [selectedCourse, setselectedCourse] = useState('');
+    const [isSubmitting,setIsSubmitting] = useState(false);
 
     const fetchData = async() => {
         try {
@@ -28,33 +28,31 @@ export const EntrollForm = ({onEnrollmentAdded}) => {
         }
     ,[]);
 
-    const handleSaveEnrollment = async(e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        const enrollment = {
-            student_id: selectedStudent,
-            course_id: selectedCourse
+    const handleSaveEntrollment = async(e) => {
+      e.preventDefault();
+      setIsSubmitting(true);
+      const entrollment = {
+        student_id:selectedStudent,
+        course_id:selectedCourse 
+      }
+      const entrollPromise = enrollmentAPI.createEntrollment(entrollment);
+      toast.promise(entrollPromise,
+        {
+          loading:"Saving entrollment",
+          success:<b>Student entrolled successfully!</b>,
+          error:<b>Enrollmnet failed!</b>
         }
-
-        const enrollPromise = enrollmentAPI.createEnrollment(enrollment);
-        toast.promise(enrollPromise, 
-            {
-                loading: "Saving enrollment",
-                success: <b>Student enrolled successfully!</b>,
-                error: <b>Enrollment failed!</b>
-            }
-        ).then (
-            () => {
-                setSelectedStudent('');
-                setSelectedCourse('');
-                onEnrollmentAdded();
-            }
-        ).catch(
-            (error) => {console.error('Saving error: ',error)}
-        ).finally(
-            () => {setIsSubmitting(true)}
-        );
-
+      ).then(
+        () => {
+          setSelectedStudent('');
+          setselectedCourse('');
+          onEnrollmentAdded();
+        }
+      ).catch(
+        (error) => {console.error('Saving error:',error)}
+      ).finally(
+        () => {setIsSubmitting(false)}
+      );
     }
 
   return (
@@ -63,7 +61,7 @@ export const EntrollForm = ({onEnrollmentAdded}) => {
         <FcMindMap className="w-10 h-10" />
         <span>Student Enrollment</span>
       </h1>
-      <form onSubmit={handleSaveEnrollment}>
+      <form onSubmit={handleSaveEntrollment}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="mb-4">
             <label
@@ -73,9 +71,9 @@ export const EntrollForm = ({onEnrollmentAdded}) => {
               Select Student
             </label>
             <select className="w-full p-2 border rounded font-light"
-            onChange={(e) => {setSelectedStudent(e.target.value)}} 
+            onChange={(e)=> {setSelectedStudent(e.target.value)}} 
             value={selectedStudent} required>
-              <option value="" >-- Select a student --</option>
+              <option value="">-- Select a student --</option>
               {
                 students.map(
                     student => {
@@ -95,9 +93,9 @@ export const EntrollForm = ({onEnrollmentAdded}) => {
               Select Course
             </label>
             <select className="w-full p-2 border rounded font-light"
-            onChange={(e) => {setSelectedCourse(e.target.value)}}
+            onChange={(e) => {setselectedCourse(e.target.value)}} 
             value={selectedCourse} required>
-              <option value="" >-- Select a course --</option>
+              <option value="">-- Select a course --</option>
               {
                 courses.map(
                     course => {
@@ -111,8 +109,8 @@ export const EntrollForm = ({onEnrollmentAdded}) => {
           </div>
         </div>
         <button className="px-4 py-2 bg-sky-500 text-white
-         hover:bg-sky-600 rounded" disabled={isSubmitting}>
-          {isSubmitting ? "Enrolling...":"Enroll"}
+        hover:bg-sky-600 rounded" disabled={isSubmitting}>
+          {isSubmitting ? "Saving...":"Enroll"}
         </button>
       </form>
     </div>
